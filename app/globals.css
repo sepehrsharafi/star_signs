@@ -1,26 +1,830 @@
 @import "tailwindcss";
 
+/* ============================================================
+   STAR SIGNS — Design System
+   Light only. Flat and graphic: highway-signage blue and yellow
+   on paper, Swiss grid underneath, pill geometry on top.
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Palette --------------------------------------------- */
+  --paper:      #f4f3ee;   /* warm off-white page */
+  --paper-2:    #ebe9e2;   /* sunk panels */
+  --white:      #ffffff;
+  --ink:        #0e1014;   /* type black */
+  --ink-2:      #2b2f38;
+
+  /* Two brand colours — a true neutral charcoal for full-bleed weight (no
+     hue to clash against photography), a single burnt-orange/amber accent
+     for everything that needs to pop. */
+  --blue:       #d9480f;   /* accent — burnt orange */
+  --blue-deep:  #131313;   /* full-bleed blocks — neutral, near-black */
+  --blue-mid:   #363636;
+  --yellow:     #f2a900;   /* amber — electric on dark, grounded on paper */
+  --yellow-2:   #ffcf66;
+
+  /* --- Semantic --------------------------------------------- */
+  --bg:        var(--paper);
+  --bg-sunk:   var(--paper-2);
+  --fg:        var(--ink);
+  --fg-muted:  color-mix(in oklab, var(--ink) 58%, transparent);
+  --fg-faint:  color-mix(in oklab, var(--ink) 36%, transparent);
+  --line:      color-mix(in oklab, var(--ink) 15%, transparent);
+  --line-soft: color-mix(in oklab, var(--ink) 8%, transparent);
+  --accent:    var(--blue);
+
+  /* Brand palette: a white canvas with fabrication blue and safety yellow. */
+  --paper:      #ffffff;
+  --paper-2:    #f0f1f4;
+  --blue:       #1557e8;
+  --blue-deep:  #07358f;
+  --blue-mid:   #285fc4;
+  --yellow:     #f5ef19;
+  --yellow-2:   #fff56a;
+
+  /* --- Motion ----------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.4, 0.5, 1);
+  --ease-swift:    cubic-bezier(0.2, 0, 0, 1);
+
+  /* Specular strengths for the button sheen, picked per button face. */
+  --sheen-light:  rgb(255 255 255 / 0.5);
+  --sheen-bright: rgb(255 255 255 / 0.85);
+  --sheen-ink:    rgb(14 16 20 / 0.09);
+
+  /* --- Metrics ---------------------------------------------- */
+  --gutter: clamp(1rem, 4vw, 3.5rem);
+  --rule: 1px;
+
+  --grain-url: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.4'/></svg>");
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-archivo);
+  --font-sans:    var(--font-instrument);
+  --font-mono:    var(--font-instrument);
+
+  --color-bg:        var(--bg);
+  --color-bg-sunk:   var(--bg-sunk);
+  --color-fg:        var(--fg);
+  --color-fg-muted:  var(--fg-muted);
+  --color-fg-faint:  var(--fg-faint);
+  --color-line:      var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-accent:    var(--accent);
+
+  --color-paper:     var(--paper);
+  --color-paper-2:   var(--paper-2);
+  --color-white:     var(--white);
+  --color-ink:       var(--ink);
+  --color-ink-2:     var(--ink-2);
+  --color-blue:      var(--blue);
+  --color-blue-deep: var(--blue-deep);
+  --color-blue-mid:  var(--blue-mid);
+  --color-yellow:    var(--yellow);
+  --color-yellow-2:  var(--yellow-2);
+
+  /* Fluid display scale. Deliberately restrained — big enough to lead a
+     section, not so big it shouts over the content underneath it. */
+  --text-d0: clamp(2.5rem, 6.8vw, 5.75rem);
+  --text-d1: clamp(2rem, 4.6vw, 3.8rem);
+  --text-d2: clamp(1.7rem, 3.4vw, 2.75rem);
+  --text-d3: clamp(1.4rem, 2.6vw, 2.1rem);
+  --text-d4: clamp(1.15rem, 1.9vw, 1.5rem);
+  --text-micro: 0.6875rem;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-swift: cubic-bezier(0.2, 0, 0, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   Base
+   ============================================================ */
+
+* { min-width: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+/* ============================================================
+   Typographic utilities
+   ============================================================ */
+
+@utility display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  font-variation-settings: "wdth" 100;
+}
+
+@utility display-wide {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.032em;
+  line-height: 0.94;
+  font-variation-settings: "wdth" 105;
+}
+
+@utility display-narrow {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 0.9;
+  font-variation-settings: "wdth" 74;
+}
+
+/* Sentence-case editorial heading, as in the reference sites */
+@utility headline {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  font-variation-settings: "wdth" 100;
+}
+
+@utility label {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  letter-spacing: 0.055em;
+  font-weight: 650;
+}
+
+@utility spec {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+
+@utility measure { max-width: 34ch; }
+@utility measure-wide { max-width: 54ch; }
+
+/* ============================================================
+   Layout
+   ============================================================ */
+
+@utility shell {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  max-width: 96rem;
+}
+
+@utility rule-t { border-top: var(--rule) solid var(--line); }
+@utility rule-b { border-bottom: var(--rule) solid var(--line); }
+
+/* Brushed aluminium — the raceway a sign mounts on */
+@utility raceway {
+  background-image: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--fg) 5%, transparent) 0%,
+    color-mix(in oklab, var(--fg) 11%, transparent) 18%,
+    color-mix(in oklab, var(--fg) 3%, transparent) 34%,
+    color-mix(in oklab, var(--fg) 10%, transparent) 55%,
+    color-mix(in oklab, var(--fg) 4%, transparent) 78%,
+    color-mix(in oklab, var(--fg) 9%, transparent) 100%
+  );
+}
+
+@utility grain-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+  background-size: 160px 160px;
+  background-image: var(--grain-url);
+}
+
+/* ============================================================
+   Reveals — masked wipes, not fade-ups
+   ============================================================ */
+
+[data-reveal] { --d: 0ms; }
+
+[data-reveal="wipe"] {
+  clip-path: inset(0 0 102% 0);
+  transition: clip-path 1.05s var(--ease-out-expo) var(--d);
+}
+[data-reveal="wipe"][data-shown] { clip-path: inset(0 0 -25% 0); }
+
+/* Masked line reveal. The mask is vertical-only — a negative horizontal
+   inset — so a long word that overruns its column overflows visibly instead
+   of being sliced off, which `overflow: hidden` would do. */
+[data-reveal="rise"] {
+  clip-path: inset(-0.4em -100vw 0 -100vw);
+  padding-bottom: 0.1em;
+}
+[data-reveal="rise"] > * {
+  display: block;
+  transform: translate3d(0, 125%, 0) rotate(1.2deg);
+  transition: transform 1s var(--ease-out-expo) var(--d);
+}
+[data-reveal="rise"][data-shown] > * {
+  transform: translate3d(0, 0, 0) rotate(0deg);
+}
+
+[data-reveal="fade"] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 0.85s var(--ease-out-expo) var(--d),
+    transform 0.85s var(--ease-out-expo) var(--d);
+}
+[data-reveal="fade"][data-shown] { opacity: 1; transform: none; }
+
+[data-reveal="draw"] {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.1s var(--ease-out-expo) var(--d);
+}
+[data-reveal="draw"][data-shown] { transform: scaleX(1); }
+
+/* A colour block that wipes up over the page */
+[data-reveal="block"] {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.15s var(--ease-out-expo) var(--d);
+}
+[data-reveal="block"][data-shown] { clip-path: inset(0 0 0 0); }
+
+/* ============================================================
+   Marquee
+   ============================================================ */
+
+@keyframes marquee-x {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+@utility marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x var(--speed, 40s) linear infinite;
+  will-change: transform;
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@utility spin-badge {
+  animation: spin-slow 14s linear infinite;
+}
+
+/* ============================================================
+   Misc
+   ============================================================ */
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@utility tnum { font-variant-numeric: tabular-nums; }
+
+/* Blueprint grid used sparingly on the high-energy home-page bands. */
+.hero-grid {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--paper) 12%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--paper) 12%, transparent) 1px, transparent 1px);
+  background-size: clamp(42px, 5vw, 76px) clamp(42px, 5vw, 76px);
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
+/* ============================================================
+   Landing-page mechanisms
+   ============================================================ */
+
+[data-pointer] {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --pointer-dx: 0;
+  --pointer-dy: 0;
+}
+
+.motion-image {
+  transform: scale(1.035)
+    translate3d(
+      calc(var(--pointer-dx) * -12px),
+      calc(var(--pointer-dy) * -10px + var(--scroll-shift, 0) * -8px),
+      0
+    );
+  transition: transform 900ms var(--ease-out-expo), filter 700ms ease;
+  will-change: transform;
+}
+
+[data-pointing] .motion-image {
+  transform: scale(1.075)
+    translate3d(
+      calc(var(--pointer-dx) * -22px),
+      calc(var(--pointer-dy) * -18px + var(--scroll-shift, 0) * -8px),
+      0
+    );
+}
+
+/* A quiet, localized light response replaces the old full-width scan line. */
+.focus-haze {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(280px circle at var(--pointer-x) var(--pointer-y), rgb(245 239 25 / 0.18), transparent 72%);
+  mix-blend-mode: screen;
+  transition: opacity 500ms ease;
+}
+[data-pointing] .focus-haze,
+.group:hover .focus-haze { opacity: 1; }
+
+.landmark-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(7 53 143 / 0.08), transparent 44%, rgb(3 20 60 / 0.38));
+}
+.landmark-frame {
+  position: absolute;
+  inset: 0.9rem;
+  z-index: 14;
+  border: 1px solid rgb(255 255 255 / 0.34);
+  pointer-events: none;
+  transition: inset 700ms var(--ease-out-expo), border-color 400ms ease;
+}
+.landmark-stage[data-pointing] .landmark-frame {
+  inset: 1.2rem;
+  border-color: rgb(245 239 25 / 0.8);
+}
+.landmark-caption {
+  transition: transform 650ms var(--ease-out-expo), background-color 400ms ease;
+}
+.landmark-stage[data-pointing] .landmark-caption { transform: translateY(-5px); }
+
+.mechanism-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0;
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--yellow) 64%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--yellow) 64%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(190px circle at var(--pointer-x) var(--pointer-y), black, transparent 76%);
+  transition: opacity 500ms ease;
+}
+
+.mechanism-grid[data-pointing]::before,
+.group:hover .mechanism-grid::before {
+  opacity: 0.65;
+}
+
+@keyframes inspection-pass {
+  0% { transform: translateY(-110%); }
+  45%, 100% { transform: translateY(720%); }
+}
+
+.inspection-scan {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 9;
+  height: 14%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--yellow) 82%, transparent), transparent);
+  mix-blend-mode: screen;
+}
+
+[data-pointing] .inspection-scan,
+.group:hover .inspection-scan {
+  opacity: 0.8;
+  animation: inspection-pass 2.8s var(--ease-swift) infinite;
+}
+
+.pointer-crosshair {
+  position: absolute;
+  z-index: 12;
+  left: var(--pointer-x);
+  top: var(--pointer-y);
+  width: 34px;
+  height: 34px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(45deg) scale(0.6);
+  transition: opacity 300ms ease, transform 500ms var(--ease-out-expo);
+}
+
+.pointer-crosshair::before,
+.pointer-crosshair::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  background: var(--yellow);
+  transform: translate(-50%, -50%);
+}
+.pointer-crosshair::before { width: 100%; height: 1px; }
+.pointer-crosshair::after { width: 1px; height: 100%; }
+[data-pointing] .pointer-crosshair { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+
+.hero-sign-face { overflow: hidden; }
+.hero-sign-face::after {
+  content: "";
+  position: absolute;
+  inset: -30% auto -30% -35%;
+  width: 24%;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.3), transparent);
+  transition: left 900ms var(--ease-out-expo);
+}
+.group\/hero:hover .hero-sign-face::after { left: 118%; }
+
+.metric-cell {
+  position: relative;
+  overflow: hidden;
+}
+.metric-cell::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: var(--yellow);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 600ms var(--ease-out-expo);
+}
+.metric-cell:hover::after { transform: scaleX(1); transform-origin: left; }
+.metric-cell dt { transition: letter-spacing 600ms var(--ease-out-expo), transform 600ms var(--ease-out-expo); }
+.metric-cell:hover dt { letter-spacing: 0.03em; transform: translateX(5px); }
+
+.promise-card {
+  --mechanism: currentColor;
+  isolation: isolate;
+}
+.promise-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background: radial-gradient(260px circle at var(--pointer-x) var(--pointer-y), rgb(255 255 255 / 0.2), transparent 70%);
+  transition: opacity 400ms ease;
+}
+.promise-card[data-pointing]::before { opacity: 1; }
+.promise-mechanism { width: 6.5rem; height: 3rem; }
+.route-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+  stroke-dashoffset: 0;
+}
+.promise-card:hover .route-line { animation: route-flow 1s linear infinite; }
+@keyframes route-flow { to { stroke-dashoffset: -20; } }
+.route-node { transform-box: fill-box; transform-origin: center; transition: transform 600ms var(--ease-spring); }
+.promise-card:hover .route-node { transform: scale(1.55) rotate(90deg); }
+
+.permit-stack { position: relative; width: 5.8rem; height: 3.5rem; }
+.permit-sheet {
+  position: absolute;
+  width: 3.3rem;
+  height: 2.3rem;
+  border: 1px solid currentColor;
+  background: inherit;
+  transition: transform 600ms var(--ease-out-expo);
+}
+.permit-sheet:nth-child(1) { right: 0; top: 0; transform: rotate(7deg); opacity: 0.45; }
+.permit-sheet:nth-child(2) { right: 0.5rem; top: 0.3rem; transform: rotate(2deg); opacity: 0.7; }
+.permit-stamp {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border: 2px solid var(--blue);
+  padding: 0.24rem 0.35rem;
+  color: var(--blue);
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  transform: translateY(-1.25rem) rotate(-12deg);
+  transition: transform 550ms var(--ease-spring);
+}
+.promise-card:hover .permit-sheet:nth-child(1) { transform: translate(6px, -4px) rotate(10deg); }
+.promise-card:hover .permit-sheet:nth-child(2) { transform: translate(2px, -2px) rotate(4deg); }
+.promise-card:hover .permit-stamp { transform: translateY(0) rotate(-5deg); }
+
+.gauge {
+  position: relative;
+  width: 4.2rem;
+  height: 4.2rem;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  border-radius: 50%;
+  background: repeating-conic-gradient(from -90deg, currentColor 0 1deg, transparent 1deg 16deg);
+  transition: transform 900ms var(--ease-out-expo);
+}
+.gauge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 1px;
+  height: 35%;
+  background: var(--yellow);
+  transform-origin: bottom;
+  transform: rotate(-58deg);
+  transition: transform 900ms var(--ease-spring);
+}
+.gauge::after {
+  content: "";
+  position: absolute;
+  inset: 42%;
+  border-radius: 50%;
+  background: var(--yellow);
+}
+.promise-card:hover .gauge { transform: rotate(18deg); }
+.promise-card:hover .gauge::before { transform: rotate(58deg); }
+
+/* The service card's own extra: its summary unrolls with the copy lift. The
+   hover signature itself is the shared card-tag / card-copy pair below. */
+.service-summary {
+  max-height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: max-height 700ms var(--ease-out-expo), margin 500ms ease, opacity 400ms ease, transform 700ms var(--ease-out-expo);
+}
+.group:hover .service-summary,
+.group:focus-within .service-summary,
+.service-card[data-pointing] .service-summary {
+  max-height: 7rem;
+  margin-bottom: 1.25rem;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.project-card .project-visual {
+  box-shadow: 0 0 0 1px var(--line);
+  transition: box-shadow 450ms ease;
+}
+.project-card:hover .project-visual,
+.project-card:focus-visible .project-visual { box-shadow: 8px 8px 0 var(--yellow); }
+.project-overlay {
+  opacity: 0;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 720ms var(--ease-out-expo), opacity 320ms ease;
+}
+.project-card:hover .project-overlay,
+.project-card:focus-visible .project-overlay {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+}
+.project-card .project-overlay > * {
+  transform: translateY(12px);
+  transition: transform 700ms var(--ease-out-expo);
+}
+.project-card:hover .project-overlay > *,
+.project-card:focus-visible .project-overlay > * { transform: translateY(0); }
+
+.number-board { border: 1px solid var(--ink); }
+.number-tile::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 6px;
+  background: currentColor;
+  opacity: 0.2;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 650ms var(--ease-out-expo);
+}
+.number-tile:hover::after { transform: scaleX(1); transform-origin: left; }
+.number-tile > p {
+  transition: transform 700ms var(--ease-spring), letter-spacing 700ms var(--ease-out-expo);
+}
+.number-tile:hover > p { transform: translateY(-5px); letter-spacing: 0.015em; }
+
+/* ------------------------------------------------------------------
+   Card hover — one behaviour for every card on the site.
+
+   A yellow status tag drops in from above the card while the copy lifts to
+   meet it. Both halves respond to a hover anywhere on the enclosing `.group`,
+   to a keyboard focus inside it, and to `data-pointing` (which the motion
+   engine sets on pointer surfaces), so the same two classes work whether the
+   card is a link, an article or a figure.
+   ------------------------------------------------------------------ */
+
+.card-tag {
+  transform: translateY(-165%);
+  transition: transform 650ms var(--ease-out-expo);
+  will-change: transform;
+}
+.card-copy { transition: transform 700ms var(--ease-out-expo); }
+
+.group:hover .card-tag,
+.group:focus-within .card-tag,
+.group[data-pointing] .card-tag,
+[data-pointing] .card-tag { transform: translateY(0); }
+
+.group:hover .card-copy,
+.group:focus-within .card-copy,
+.group[data-pointing] .card-copy,
+[data-pointing] .card-copy { transform: translateY(-10px); }
+
+.process-card .process-index { transition: transform 750ms var(--ease-spring), color 400ms ease; }
+.process-card:hover .process-index { transform: translate(8px, -8px) rotate(-6deg); color: var(--paper); }
+.process-card .process-photo { transition: clip-path 800ms var(--ease-out-expo), transform 1000ms var(--ease-out-expo); clip-path: inset(0); }
+.process-card:hover .process-photo { clip-path: inset(3% 3% 3% 3%); transform: scale(1.07); }
+
+.testimonial-card::after {
+  content: "“";
+  position: absolute;
+  right: 1rem;
+  top: 0.4rem;
+  color: var(--blue);
+  font: 800 8rem/1 var(--font-display), sans-serif;
+  opacity: 0.06;
+  transform: rotate(8deg) scale(0.8);
+  transition: opacity 500ms ease, transform 800ms var(--ease-spring);
+}
+.testimonial-card:hover::after { opacity: 0.16; transform: rotate(-5deg) scale(1); }
+.testimonial-wave { transform-origin: bottom; transition: transform 500ms var(--ease-spring); }
+.testimonial-card:hover .testimonial-wave:nth-child(odd) { transform: scaleY(1.7); }
+.testimonial-card:hover .testimonial-wave:nth-child(even) { transform: scaleY(0.55); }
+.testimonial-copy { transition: transform 700ms var(--ease-out-expo); }
+.testimonial-card:hover .testimonial-copy { transform: translateX(7px); }
+.testimonial-avatar { transition: border-radius 500ms var(--ease-spring), transform 600ms var(--ease-spring); }
+.testimonial-card:hover .testimonial-avatar { border-radius: 50%; transform: rotate(-8deg); }
+
+[data-magnetic] {
+  --magnet-x: 0px;
+  --magnet-y: 0px;
+  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
+  transition: transform 420ms var(--ease-out-expo);
+}
+
+/* ------------------------------------------------------------------
+   Buttons — a sign switching on.
+
+   Three layers, all on the compositor. A raceway hairline runs the width of
+   the floor, a specular band sweeps the face on the diagonal, and the label
+   rolls to its second line. Nothing lifts and nothing drops a shadow: the
+   button stays exactly where it was and simply lights.
+   ------------------------------------------------------------------ */
+
+.signal-button {
+  isolation: isolate;
+  --signal-sheen: rgb(255 255 255 / 0.5);
+}
+
+/* The face highlight. Sits above the rising fill (which is a child at the
+   default layer) and below the label, so it reads as light on paint. */
+.signal-button::after {
+  content: "";
+  position: absolute;
+  inset: -30% -45%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    102deg,
+    transparent 40%,
+    var(--signal-sheen) 50%,
+    transparent 60%
+  );
+  transform: translate3d(-80%, 0, 0);
+  transition: transform 900ms var(--ease-out-expo);
+}
+.signal-button:hover::after,
+.signal-button:focus-visible::after { transform: translate3d(80%, 0, 0); }
+
+/* The fill floods in on a tilt rather than as a flat shutter, so the edge
+   reads as paint being drawn across the face. A polygon with a fixed point
+   count on both sides keeps the interpolation smooth, and it works on a pill
+   and on a square alike — unlike a hairline pinned to the bottom edge. */
+.signal-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--fill);
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  transition: clip-path 640ms var(--ease-out-expo);
+}
+.signal-button:hover .signal-fill,
+.signal-button:focus-visible .signal-fill {
+  clip-path: polygon(0 -14%, 100% 7%, 100% 100%, 0 100%);
+}
+
+.signal-label-track { transition: transform 550ms var(--ease-out-expo); }
+.signal-button:hover .signal-label-track,
+.signal-button:focus-visible .signal-label-track { transform: translateY(-50%); }
+
+/* Schedule row — the sheet index on the services page. Yellow wipes across
+   from the left and the row nudges with it, like the footer links. */
+.schedule-row .schedule-fill {
+  transform: translateX(-101%);
+  transition: transform 620ms var(--ease-out-expo);
+}
+.schedule-row:hover .schedule-fill { transform: translateX(0); }
+.schedule-row > *:not(.schedule-fill) { transition: transform 620ms var(--ease-out-expo); }
+.schedule-row:hover > *:not(.schedule-fill) { transform: translateX(6px); }
+
+/* The footer's background, drawn rather than photographed: a warm bloom at
+   the top-left and a cold one at the bottom-right, as though a lit sign were
+   washing the wall it hangs on. */
+.footer-wash {
+  pointer-events: none;
+  background:
+    radial-gradient(
+      68rem 24rem at 10% -12%,
+      color-mix(in oklab, var(--yellow) 17%, transparent),
+      transparent 66%
+    ),
+    radial-gradient(
+      50rem 22rem at 96% 112%,
+      color-mix(in oklab, var(--blue) 60%, transparent),
+      transparent 70%
+    );
+}
+
+.footer-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+  padding-block: 0.5rem;
+  overflow: hidden;
+}
+.footer-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--yellow);
+  transform: translateX(-102%);
+  transition: transform 600ms var(--ease-out-expo);
+}
+.footer-link:hover::before { transform: translateX(0); }
+.footer-link > * { position: relative; z-index: 1; transition: color 300ms ease, transform 600ms var(--ease-out-expo); }
+.footer-link:hover > * { color: var(--ink); transform: translateX(5px); }
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  [data-reveal] > * { transform: none !important; }
+  [data-reveal="draw"] { transform: scaleX(1) !important; }
+  .motion-image,
+  [data-magnetic],
+  .signal-label-track,
+  .process-photo,
+  .process-index { transform: none !important; }
+  .inspection-scan { display: none !important; }
 }
